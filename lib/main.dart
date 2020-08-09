@@ -37,6 +37,7 @@ class _PersonalCalculatorState extends State<PersonalCalculator> {
     Parser p = new Parser();
     expression = expression.replaceAll('X', '*');
     expression = expression.replaceAll('÷', '/');
+
     Expression exp = p.parse(expression);
     setState(() {
       result = exp
@@ -50,13 +51,19 @@ class _PersonalCalculatorState extends State<PersonalCalculator> {
       padding: const EdgeInsets.all(3.0),
       child: GestureDetector(
         onTap: () {
-          if (a == 'AC') {
+          if (a == '+/-') {
             setState(() {
-              expression = '';
+              expression = '-' + expression;
+              evaluateExpression();
+            });
+          } else if (a == 'AC') {
+            setState(() {
+              expression = '0';
+              result = '0';
             });
           } else if (a == '←') {
             setState(() {
-              expression = expression.trimRight();
+              expression = expression.substring(0, expression.length - 1);
             });
           } else
             (a == '=') ? evaluateExpression() : makeExpression(a);
@@ -93,20 +100,32 @@ class _PersonalCalculatorState extends State<PersonalCalculator> {
               Flexible(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        expression,
-                        style: TextStyle(fontSize: 25, color: Colors.white),
+                      Expanded(
+                        flex: 1,
+                        child: SingleChildScrollView(
+                          child: Text(
+                            expression,
+                            style: TextStyle(fontSize: 25, color: Colors.white),
+                          ),
+                        ),
                       ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          result,
-                          style: TextStyle(fontSize: 25, color: Colors.white),
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Text(
+                              result,
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.white),
+                            ),
+                          ),
                         ),
                       )
                     ],
